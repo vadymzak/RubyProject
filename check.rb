@@ -1,18 +1,20 @@
 require 'jwt'
 
 class Check
-  def initialize(token)
+  attr_reader :decode
+
+  def initialize(token, key)
     @token = token
-    @hmac_secret = 'my$ecretK3y'
+    @hmac_secret = key
+    @decode
   end
 
   def decode_HS256
     begin
-      decoded_token = JWT.decode @token, @hmac_secret, true, { algorithm: 'HS256' }
-      puts decoded_token
-    rescue JWT::ExpiredSignature
-      # Handle expired token, e.g. logout user or deny access
-      puts "Token no valid"
+      @decode = JWT.decode @token, @hmac_secret, true, { algorithm: 'HS256' }
+      true
+    rescue JWT::ExpiredSignature, JWT::VerificationError
+      false
     end
   end
 
