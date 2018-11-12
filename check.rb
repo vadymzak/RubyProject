@@ -13,7 +13,7 @@ class Check
     begin
       @decode = JWT.decode @token, @hmac_secret, true, { algorithm: 'HS256' }
       true
-    rescue JWT::ExpiredSignature, JWT::VerificationError
+    rescue JWT::ExpiredSignature, JWT::VerificationError, JWT::DecodeError
       false
     end
   end
